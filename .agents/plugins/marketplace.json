@@ -1,0 +1,15 @@
+{
+  "name": "deepseek-market",
+  "interface": {
+    "displayName": "DeepSeek 工具（本地）"
+  },
+  "plugins": [
+    {
+      "name": "deepseek-search",
+      "source": {
+        "source": "local",
+        "path": "./plugin"
+      }
+    }
+  ]
+}

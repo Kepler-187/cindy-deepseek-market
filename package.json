@@ -1,0 +1,13 @@
+{
+  "name": "cindy-deepseek-market",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Cindy 插件市场：把 DeepSeek 自研搜索引擎（Search / Fetch API）接成 deepseek_search / deepseek_fetch 工具，供 Pi、Claude Code、Codex 共用。",
+  "keywords": ["cindy", "plugin", "deepseek", "web-search", "mcp"],
+  "homepage": "https://github.com/Kepler-187/cindy-deepseek-market",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Kepler-187/cindy-deepseek-market.git"
+  },
+  "license": "MIT"
+}

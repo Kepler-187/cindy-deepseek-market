@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 3,
+  "minCindyVersion": "0.1.108",
+  "id": "deepseek-search",
+  "name": "DeepSeek 搜索",
+  "description": "用 DeepSeek 自研搜索引擎提供联网搜索与网页抓取：deepseek_search 返回结构化搜索结果（标题、链接、长摘要、相关性与权威性评分，支持 site:/lang:/after: 等语法），deepseek_fetch 把网页抓成 Markdown 正文。",
+  "whenToUse": "需要联网搜索或抓取网页时找我：查资料、确认最新事实、找官方文档、读某个具体页面。deepseek_search 支持一次传多角度 queries，需要正文时带 includeContent；deepseek_fetch 用来读搜索结果里的具体 URL。",
+  "version": "0.1.0",
+  "kind": "chip",
+  "author": "Kepler-187",
+  "entry": "main.js",
+  "command": "deepseek-search",
+  "node": {
+    "entry": "node/worker.cjs",
+    "protocol": "json-rpc-stdio",
+    "lifecycle": "on-demand",
+    "idleTimeoutSeconds": 300
+  },
+  "tools": [
+    {
+      "name": "deepseek_search",
+      "description": "用 DeepSeek 自研搜索引擎搜索网页，返回标题、链接、长摘要、正文（可选）以及相关性与权威性评分。支持 DeepSeek 搜索语法，可直接写进 query：site:github.com、-site:example.com、\"精确短语\"、-广告、lang:zh,en、after:2026-01-01、before:2026-06-01。调研类任务用 queries 传 2-4 条不同角度的查询。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "单条查询词，支持 site:、-site:、\"精确短语\"、lang:、after:、before: 等语法"
+          },
+          "queries": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "多条查询，依次执行并分别返回结果；调研类任务建议 2-4 条不同角度"
+          },
+          "numResults": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "每条查询返回的结果数，默认 5"
+          },
+          "includeContent": {
+            "type": "boolean",
+            "description": "是否同时返回网页正文，默认 false"
+          },
+          "recencyFilter": {
+            "type": "string",
+            "enum": ["day", "week", "month", "year"],
+            "description": "只返回该时间范围内发布的网页"
+          },
+          "domainFilter": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "限定域名，前缀 - 表示排除，例如 [\"github.com\", \"-example.com\"]"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "deepseek_fetch",
+      "description": "用 DeepSeek Fetch API 抓取网页并返回 Markdown 正文，适合读取搜索结果里的具体页面。可传 url 或 urls（最多 5 个并行）。目标站点不可达、被策略拦截或没有可提取正文时会返回错误说明。",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "单个要抓取的 URL"
+          },
+          "urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "多个 URL，最多 5 个，并行抓取"
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "deepseek_status",
+      "description": "检查 DeepSeek 搜索插件状态：API Key 来源、Search/Fetch 接口连通性与剩余额度是否可用。搜索报错或刚安装插件时先调用它做诊断。",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": false
+      }
+    }
+  ]
+}
